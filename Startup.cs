@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using VueCliMiddleware;
 
-namespace aspnet_core_vue_app
+namespace Cards.Front
 {
     public class Startup
     {

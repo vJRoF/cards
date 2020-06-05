@@ -1,6 +1,6 @@
 using System;
 
-namespace aspnet_core_vue_app
+namespace Cards.Front
 {
     public class WeatherForecast
     {

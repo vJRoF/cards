@@ -2,7 +2,7 @@
 using MimeTypes;
 using System;
 
-namespace aspnet_core_vue_app.Controllers
+namespace Cards.Front.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

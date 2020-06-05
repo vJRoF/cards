@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace aspnet_core_vue_app.Services
+namespace Cards.Front.Services
 {
     public class GoogleDrivePictureService : IPictureService
     {

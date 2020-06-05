@@ -7,7 +7,7 @@
     <IsPackable>false</IsPackable>
     <SpaRoot>ClientApp\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
-    <RootNamespace>aspnet_core_vue_app</RootNamespace>
+    <RootNamespace>Cards.Front</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
