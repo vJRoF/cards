@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MimeTypes;
 using System;
 
 namespace Cards.Front.Controllers
@@ -15,7 +14,7 @@ namespace Cards.Front.Controllers
         [HttpGet("{deckId}/{cardId}")]
         public IActionResult Picture(string deckId, string cardId)
         {
-            return File(Convert.FromBase64String(_imageBase64), MimeTypeMap.GetMimeType("png"));
+            return File(Convert.FromBase64String(_imageBase64), "image/png");
         }
     }
 }
