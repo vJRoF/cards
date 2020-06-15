@@ -1,3 +1,4 @@
+using System;
 using Cards.DataAccess;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -40,6 +41,8 @@ namespace Cards.Front
             });
 
             services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data Source=cards.db"));
+            services.AddHttpClient("google")
+                .ConfigureHttpClient((sp, client) => client.Timeout = TimeSpan.FromSeconds(10));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
