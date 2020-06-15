@@ -1,0 +1,1 @@
+﻿Update-Database -Migration 20200615182558_InitialCreate -Connection "Data Source=cards.db" -Project Cards.DataAccess

@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Cards.DataAccess.Migrations
 {
-    [DbContext(typeof(AppContext))]
-    partial class AppContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(AppDbContext))]
+    partial class AppDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -30,6 +30,14 @@ namespace Cards.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Cards");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DeckName = "Sample",
+                            PictureUri = "https://drive.google.com/uc?export=view&id=1X1ChJjhZkvnBGP4De8Gf5MnsHleaT6Qy"
+                        });
                 });
 #pragma warning restore 612, 618
         }

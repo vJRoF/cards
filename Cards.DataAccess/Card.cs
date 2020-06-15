@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Cards.DataAccess
 {
-    class Card
+    public class Card
     {
         /// <summary>
         ///     Id

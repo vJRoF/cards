@@ -7,8 +7,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Cards.DataAccess.Migrations
 {
-    [DbContext(typeof(AppContext))]
-    [Migration("20200612121809_InitialCreate")]
+    [DbContext(typeof(AppDbContext))]
+    [Migration("20200615182558_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,6 +32,14 @@ namespace Cards.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Cards");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DeckName = "Sample",
+                            PictureUri = "https://drive.google.com/uc?export=view&id=1X1ChJjhZkvnBGP4De8Gf5MnsHleaT6Qy"
+                        });
                 });
 #pragma warning restore 612, 618
         }
