@@ -13,11 +13,11 @@ namespace Cards.DataAccess
         {
             modelBuilder.Entity<Card>()
                 .HasData(
-                    new Card{ Id = 1, DeckName = Decks.Sample, PictureUri = Utils.MakeGoogleDriveExportUri("1X1ChJjhZkvnBGP4De8Gf5MnsHleaT6Qy") },
+                    new Card{ Id = 10000, DeckName = Decks.Sample, PictureUri = Utils.MakeGoogleDriveExportUri("1X1ChJjhZkvnBGP4De8Gf5MnsHleaT6Qy") },
                     new Card { Id = 1, DeckName = Decks.Deck1, PictureUri = Utils.MakeGoogleDriveExportUri("1Fhs5PgE7J77FEMl8ZJiupHkVUimUQ4P3") },
-                    new Card { Id = 2, DeckName = Decks.Deck1, PictureUri = Utils.MakeGoogleDriveExportUri("1Fhs5PgE7J77FEMl8ZJiupHkVUimUQ4P3") },
-                    new Card { Id = 3, DeckName = Decks.Deck1, PictureUri = Utils.MakeGoogleDriveExportUri("1Fhs5PgE7J77FEMl8ZJiupHkVUimUQ4P3") },
-                    new Card { Id = 4, DeckName = Decks.Deck1, PictureUri = Utils.MakeGoogleDriveExportUri("1Fhs5PgE7J77FEMl8ZJiupHkVUimUQ4P3") },
+                    new Card { Id = 2, DeckName = Decks.Deck1, PictureUri = Utils.MakeGoogleDriveExportUri("1B-m9CUp43S1ElqrzdnLQFR2rrg4pOzlI") },
+                    new Card { Id = 3, DeckName = Decks.Deck1, PictureUri = Utils.MakeGoogleDriveExportUri("1mHeIWMuxQnZ2qifSZxSAmoY3xPU8vV3s") },
+                    new Card { Id = 4, DeckName = Decks.Deck1, PictureUri = Utils.MakeGoogleDriveExportUri("1nt2QxOc7Sr5srHbhI1ITKVPOt3vwhYQh") },
                     new Card { Id = 5, DeckName = Decks.Deck1, PictureUri = Utils.MakeGoogleDriveExportUri("1Fhs5PgE7J77FEMl8ZJiupHkVUimUQ4P3") },
                     new Card { Id = 6, DeckName = Decks.Deck1, PictureUri = Utils.MakeGoogleDriveExportUri("1Fhs5PgE7J77FEMl8ZJiupHkVUimUQ4P3") },
                     new Card { Id = 7, DeckName = Decks.Deck1, PictureUri = Utils.MakeGoogleDriveExportUri("1Fhs5PgE7J77FEMl8ZJiupHkVUimUQ4P3") },
@@ -55,7 +55,7 @@ namespace Cards.DataAccess
                     new Card { Id = 39, DeckName = Decks.Deck1, PictureUri = Utils.MakeGoogleDriveExportUri("1Fhs5PgE7J77FEMl8ZJiupHkVUimUQ4P3") },
                     new Card { Id = 40, DeckName = Decks.Deck1, PictureUri = Utils.MakeGoogleDriveExportUri("1Fhs5PgE7J77FEMl8ZJiupHkVUimUQ4P3") },
                     new Card { Id = 41, DeckName = Decks.Deck1, PictureUri = Utils.MakeGoogleDriveExportUri("1Fhs5PgE7J77FEMl8ZJiupHkVUimUQ4P3") },
-                    new Card { Id = 42, DeckName = Decks.Deck1, PictureUri = Utils.MakeGoogleDriveExportUri("1Fhs5PgE7J77FEMl8ZJiupHkVUimUQ4P3") })
+                    new Card { Id = 42, DeckName = Decks.Deck1, PictureUri = Utils.MakeGoogleDriveExportUri("1Fhs5PgE7J77FEMl8ZJiupHkVUimUQ4P3") });
                 
 
             base.OnModelCreating(modelBuilder);
