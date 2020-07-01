@@ -34,7 +34,9 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { CardsService, DeckModel } from '../../service/index'
+import { CardsService, serviceOptions,  DeckModel } from '../../service/index';
+import axios from 'axios';
+import { CardsClient } from '../cardsclient';
 
 @Component
 export default class HelloWorld extends Vue {
@@ -42,10 +44,30 @@ export default class HelloWorld extends Vue {
   @Prop() private decks!: DeckModel[];
 
   constructor () {
-    const cardsService = new CardsService()
-    CardsService.decks()
-      .then(response => this.decks = response);
+    
+    const instance = axios.create({
+      baseURL: 'http://localhost:48513',
+      timeout: 1000,
+    });
+    serviceOptions.axios = instance;
+
+    CardsService.picture({cardId: 1, deckId: 'ddd'})
+      .then(response => this.decks = response)
+      .catch(reason => {
+        alert(reason);
+      })
     super();
+  }
+
+  async mounted() {
+    try {
+      // const cardsClient = new CardsClient('http://localhost:48513');
+      // const picture = await cardsClient.picture(1, 'ddd')
+      // const a = 1;
+    }
+    catch(err) {
+      alert(err);
+    }
   }
 }
 </script>
