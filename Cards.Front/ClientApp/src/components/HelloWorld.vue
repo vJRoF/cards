@@ -34,10 +34,19 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import { CardsService, DeckModel } from '../../service/index'
 
 @Component
 export default class HelloWorld extends Vue {
   @Prop() private msg!: string;
+  @Prop() private decks!: DeckModel[];
+
+  constructor () {
+    const cardsService = new CardsService()
+    CardsService.decks()
+      .then(response => this.decks = response);
+    super();
+  }
 }
 </script>
 

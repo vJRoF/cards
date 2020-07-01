@@ -37,7 +37,7 @@ namespace Cards.Front
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "ClientApp/build";
+                configuration.RootPath = "ClientApp/dist";
             });
 
             services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data Source=cards.db"));
@@ -61,8 +61,8 @@ namespace Cards.Front
                 app.UseHsts();
             }
 
-            if (env.IsDevelopment())
-                app.UseHttpsRedirection();
+            //if (env.IsDevelopment())
+            //    app.UseHttpsRedirection();
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
