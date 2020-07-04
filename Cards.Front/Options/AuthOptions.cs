@@ -1,6 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,12 +10,16 @@ namespace Cards.Front.Options
 {
     public class AuthOptions
     {
+        [Required]
         public string Issuer { get; set; }
 
+        [Required]
         public string Audience { get; set; }
 
+        [Required]
         public TimeSpan TokenLifetime { get; set; }
 
+        [Required]
         public string SecurityKeyBase64 { get; set; }
 
         public SecurityKey GetSymmetricSecurityKey()

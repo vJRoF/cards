@@ -58,6 +58,8 @@ namespace Cards.Front
             services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data Source=cards.db"));
             services.AddHttpClient("google")
                 .ConfigureHttpClient((sp, client) => client.Timeout = TimeSpan.FromSeconds(10));
+
+            services.Configure<AuthOptions>(Configuration.GetSection("Auth"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
