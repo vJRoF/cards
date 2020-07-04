@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Cards.DataAccess.Migrations;
+using Microsoft.EntityFrameworkCore;
 
 namespace Cards.DataAccess
 {
     public class AppDbContext : DbContext
     {
+        public DbSet<User> Users { get; set; }
         public DbSet<Card> Cards { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options)
@@ -56,6 +58,9 @@ namespace Cards.DataAccess
                     new Card { Id = 40, DeckName = Decks.Deck1, PictureUri = Utils.MakeGoogleDriveExportUri("1Fhs5PgE7J77FEMl8ZJiupHkVUimUQ4P3") },
                     new Card { Id = 41, DeckName = Decks.Deck1, PictureUri = Utils.MakeGoogleDriveExportUri("1Fhs5PgE7J77FEMl8ZJiupHkVUimUQ4P3") },
                     new Card { Id = 42, DeckName = Decks.Deck1, PictureUri = Utils.MakeGoogleDriveExportUri("1Fhs5PgE7J77FEMl8ZJiupHkVUimUQ4P3") });
+
+            modelBuilder.Entity<User>()
+                .HasData(new User {Name = "MisterVovan"});
                 
 
             base.OnModelCreating(modelBuilder);

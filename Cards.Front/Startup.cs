@@ -1,5 +1,8 @@
 using System;
 using Cards.DataAccess;
+using Cards.Front.Extensions;
+using Cards.Front.Options;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -8,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using VueCliMiddleware;
 
@@ -25,14 +29,25 @@ namespace Cards.Front
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = Configuration.GetValue<string>($"Auth:{nameof(AuthOptions.Issuer)}"),
+                        ValidateAudience = true,
+                        ValidAudience = Configuration.GetValue<string>($"Auth:{nameof(AuthOptions.Audience)}"),
+                        ValidateLifetime = true,
+                        IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(
+                            Configuration.GetValue<string>($"Auth:{nameof(AuthOptions.SecurityKeyBase64)}")),
+                        ValidateIssuerSigningKey = true,
+                    };
+                });
             services.AddControllersWithViews();
 
-            // Register the Swagger generator, defining 1 or more Swagger documents
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "API метафорических карт", Version = "v1" });
-            });
+            services.AddSwagger();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -78,6 +93,9 @@ namespace Cards.Front
             app.UseSpaStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
