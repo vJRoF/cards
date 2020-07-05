@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Cards.DataAccess;
+using Cards.Front.Model;
 using Cards.Front.Options;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.Swagger.Annotations;
 
 namespace Cards.Front.Controllers
 {
@@ -27,7 +32,11 @@ namespace Cards.Front.Controllers
         }
 
         [HttpPost("/token")]
-        public IActionResult Token(string username, string password)
+        [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(TokenCreatedModel))]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        public IActionResult Token(
+            [Required] string username,
+            [Required] string password)
         {
             var identity = GetIdentity(username, password);
             if (identity == null)
@@ -45,14 +54,8 @@ namespace Cards.Front.Controllers
                 expires: now.Add(_authOptions.TokenLifetime),
                 signingCredentials: new SigningCredentials(_authOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-
-            var response = new
-            {
-                access_token = encodedJwt,
-                username = identity.Name
-            };
-
-            return Ok(response);
+            
+            return Ok(new TokenCreatedModel{Token = encodedJwt, UserName = identity.Name});
         }
 
         private ClaimsIdentity GetIdentity(string username, string password)
