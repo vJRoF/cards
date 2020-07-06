@@ -93,6 +93,7 @@
 
 <script lang="ts">
   import Vue from 'vue'
+  import { ApiClient, IConfig } from '../client/api-client'
 
   export default Vue.extend({
     name: 'HelloWorld',
@@ -149,5 +150,10 @@
         },
       ],
     }),
-  })
+    mounted: async () => {
+      const apiClient = new ApiClient (new IConfig("ddddd"));
+      await apiClient.picture(1, "Sample");
+    }
+  },
+)
 </script>

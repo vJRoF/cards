@@ -35,7 +35,7 @@ namespace Cards.Front.Options
         internal static string GenerateKey()
         {
             var rng = new Random((int)DateTime.Now.Ticks);
-            var bytes = new byte[64];
+            var bytes = new byte[32];
             rng.NextBytes(bytes);
             return Convert.ToBase64String(bytes);
         }
