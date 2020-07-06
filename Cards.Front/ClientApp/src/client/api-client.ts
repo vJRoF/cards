@@ -17,7 +17,7 @@ export class AuthorizedApiBase {
   protected transformOptions = (options: RequestInit): Promise<RequestInit> => {
     options.headers = {
       ...options.headers,
-      Authorization: this.config.token,
+      Authorization: this.config.getAuthorization(),
     };
     return Promise.resolve(options);
   };
@@ -55,7 +55,9 @@ export class ApiClient extends AuthorizedApiBase {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processToken(_response);
         });
     }
@@ -89,7 +91,9 @@ export class ApiClient extends AuthorizedApiBase {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processDecks(_response);
         });
     }
@@ -135,7 +139,9 @@ export class ApiClient extends AuthorizedApiBase {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processPicture(_response);
         });
     }
@@ -233,9 +239,13 @@ export class IConfig {
    * Returns a valid value for the Authorization header.
    * Used to dynamically inject the current auth header.
    */
-  token: string;
+  private token: string;
 
   constructor(token: string) {
     this.token = token;
+  }
+
+  getAuthorization():string {
+      return `Bearer ${this.token}`;
   }
 }

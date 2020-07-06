@@ -8,10 +8,14 @@ export class IConfig {
    * Returns a valid value for the Authorization header.
    * Used to dynamically inject the current auth header.
    */
-  token: string;
+  private token: string;
 
   constructor(token: string) {
     this.token = token;
+  }
+
+  getAuthorization():string {
+      return `Bearer ${this.token}`;
   }
 }
   
@@ -25,7 +29,7 @@ export class AuthorizedApiBase {
   protected transformOptions = (options: RequestInit): Promise<RequestInit> => {
     options.headers = {
       ...options.headers,
-      Authorization: this.config.token,
+      Authorization: this.config.getAuthorization(),
     };
     return Promise.resolve(options);
   };
