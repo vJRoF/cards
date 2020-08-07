@@ -48,7 +48,7 @@ namespace Cards.Front
                     };
                 });
             services.AddControllersWithViews();
-
+            services.AddSignalR();
             services.AddSwagger();
 
             // In production, the React files will be served from this directory
