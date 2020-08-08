@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Cards.Front</name>
+    </assembly>
+    <members>
+        <member name="M:Cards.Front.Controllers.DesktopController.Card">
+            <summary>
+                Положить выбранную карту на стол
+            </summary>
+        </member>
+        <member name="M:Cards.Front.Extensions.ServicesRegistrationExtensions.AddSwagger(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+                Register the Swagger generator, defining 1 or more Swagger documents
+            </summary>
+        </member>
+    </members>
+</doc>

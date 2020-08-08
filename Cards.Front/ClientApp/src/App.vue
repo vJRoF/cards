@@ -38,24 +38,37 @@
     </v-app-bar>
 
     <v-content>
-      <HelloWorld/>
+      <v-btn v-on:click="addCard">
+        PUSH ME
+      </v-btn>
     </v-content>
   </v-app>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import HelloWorld from './components/HelloWorld.vue';
+import * as signalR from "@microsoft/signalr";
+import { ApiClient, IConfig } from "./client/api-client";
 
 export default Vue.extend({
   name: 'App',
 
   components: {
-    HelloWorld,
   },
 
   data: () => ({
     //
   }),
+  methods:{
+    addCard: async () => {
+      const client = new ApiClient(new IConfig("dfdfdf"));
+      await client.card();
+    }
+  },
+  mounted: () => {
+    const connection = new signalR.HubConnectionBuilder()
+    .withUrl('/hub')
+    .build();
+  },
 });
 </script>

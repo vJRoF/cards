@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Swashbuckle.Swagger.Annotations;
 
 namespace Cards.Front.Controllers
 {
@@ -32,8 +31,8 @@ namespace Cards.Front.Controllers
         }
 
         [HttpPost("/token")]
-        [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(TokenCreatedModel))]
-        [SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenCreatedModel))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         public IActionResult Token(
             [Required] string username,
             [Required] string password)

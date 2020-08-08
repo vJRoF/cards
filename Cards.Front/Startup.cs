@@ -1,6 +1,8 @@
 using System;
+using System.IO;
 using Cards.DataAccess;
 using Cards.Front.Extensions;
+using Cards.Front.Hubs;
 using Cards.Front.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -31,6 +33,13 @@ namespace Cards.Front
         {
             var key = AuthOptions.GenerateKey();
 
+            //services.AddCors(options =>
+            //{
+            //    options.AddDefaultPolicy(builder => builder
+            //        .WithOrigins("http://localhost:8080")
+            //        .WithMethods("GET", "POST"));
+            //});
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -49,7 +58,9 @@ namespace Cards.Front
                 });
             services.AddControllersWithViews();
             services.AddSignalR();
-            services.AddSwagger();
+            services.AddSwaggerGen(options => {
+                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Cards.Front.xml"));
+            });
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -68,6 +79,8 @@ namespace Cards.Front
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, AppDbContext dbContext)
         {
             dbContext.Database.Migrate();
+
+            //app.UseCors();
 
             if (env.IsDevelopment())
             {
@@ -106,6 +119,7 @@ namespace Cards.Front
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
+                endpoints.MapHub<CardsHub>("/hub");
             });
 
             app.UseSpa(spa =>

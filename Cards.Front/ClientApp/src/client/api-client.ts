@@ -37,7 +37,7 @@ export class ApiClient extends AuthorizedApiBase {
     /**
      * @return Success
      */
-    token(username: string, password: string): Promise<void> {
+    token(username: string, password: string): Promise<TokenCreatedModel> {
         let url_ = this.baseUrl + "/token?";
         if (username === undefined || username === null)
             throw new Error("The parameter 'username' must be defined and cannot be null.");
@@ -52,6 +52,7 @@ export class ApiClient extends AuthorizedApiBase {
         let options_ = <RequestInit>{
             method: "POST",
             headers: {
+                "Accept": "text/plain"
             }
         };
 
@@ -62,19 +63,29 @@ export class ApiClient extends AuthorizedApiBase {
         });
     }
 
-    protected processToken(response: Response): Promise<void> {
+    protected processToken(response: Response): Promise<TokenCreatedModel> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = TokenCreatedModel.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetails.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(<any>null);
+        return Promise.resolve<TokenCreatedModel>(<any>null);
     }
 
     /**
@@ -160,6 +171,134 @@ export class ApiClient extends AuthorizedApiBase {
         }
         return Promise.resolve<void>(<any>null);
     }
+
+    /**
+     * Положить выбранную карту на стол
+     * @return Success
+     */
+    card(): Promise<void> {
+        let url_ = this.baseUrl + "/api/Desktop/card";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "POST",
+            headers: {
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processCard(_response);
+        });
+    }
+
+    protected processCard(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(<any>null);
+    }
+}
+
+export class TokenCreatedModel implements ITokenCreatedModel {
+    token?: string | undefined;
+    userName?: string | undefined;
+
+    constructor(data?: ITokenCreatedModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.token = data["token"];
+            this.userName = data["userName"];
+        }
+    }
+
+    static fromJS(data: any): TokenCreatedModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new TokenCreatedModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["token"] = this.token;
+        data["userName"] = this.userName;
+        return data; 
+    }
+}
+
+export interface ITokenCreatedModel {
+    token?: string | undefined;
+    userName?: string | undefined;
+}
+
+export class ProblemDetails implements IProblemDetails {
+    type?: string | undefined;
+    title?: string | undefined;
+    status?: number | undefined;
+    detail?: string | undefined;
+    instance?: string | undefined;
+
+    constructor(data?: IProblemDetails) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.type = data["type"];
+            this.title = data["title"];
+            this.status = data["status"];
+            this.detail = data["detail"];
+            this.instance = data["instance"];
+        }
+    }
+
+    static fromJS(data: any): ProblemDetails {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProblemDetails();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["type"] = this.type;
+        data["title"] = this.title;
+        data["status"] = this.status;
+        data["detail"] = this.detail;
+        data["instance"] = this.instance;
+        return data; 
+    }
+}
+
+export interface IProblemDetails {
+    type?: string | undefined;
+    title?: string | undefined;
+    status?: number | undefined;
+    detail?: string | undefined;
+    instance?: string | undefined;
 }
 
 export class DeckModel implements IDeckModel {
