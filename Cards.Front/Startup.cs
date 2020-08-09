@@ -116,10 +116,8 @@ namespace Cards.Front
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
                 endpoints.MapHub<CardsHub>("/hub");
+                endpoints.MapDefaultControllerRoute();
             });
 
             app.UseSpa(spa =>

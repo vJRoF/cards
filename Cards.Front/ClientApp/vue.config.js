@@ -8,6 +8,11 @@ module.exports = {
         target: 'http://localhost:48513',
         ws: true,
         changeOrigin: true
+      },
+      '^/hub': {
+        target: 'http://localhost:48513',
+        ws: true,
+        changeOrigin: true
       }
     }
   },

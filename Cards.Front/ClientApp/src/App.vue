@@ -41,6 +41,9 @@
       <v-btn v-on:click="addCard">
         PUSH ME
       </v-btn>
+      <div v-for="message in messages" :key="message[0]">
+        {{message[1]}}
+      </div>
     </v-content>
   </v-app>
 </template>
@@ -57,18 +60,24 @@ export default Vue.extend({
   },
 
   data: () => ({
-    //
+      messages: new Array<[number, string]>()
   }),
   methods:{
     addCard: async () => {
       const client = new ApiClient(new IConfig("dfdfdf"));
       await client.card();
+    },
+    addMessage: function (username: number, message: string) {
+      this.messages.push([this.messages.length, message]);
     }
   },
-  mounted: () => {
+  mounted: function () {
     const connection = new signalR.HubConnectionBuilder()
-    .withUrl('/hub')
-    .build();
+      .withUrl('/hub')
+      .build();
+      
+    connection.on('messageRecieved', this.addMessage);
+    connection.start().catch(err => console.log(err));
   },
 });
 </script>
