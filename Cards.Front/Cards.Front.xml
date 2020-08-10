@@ -9,6 +9,19 @@
                 Положить выбранную карту на стол
             </summary>
         </member>
+        <member name="M:Cards.Front.Controllers.SessionController.Create(System.String)">
+            <summary>
+                Создать новый сеанс
+            </summary>
+            <param name="sessionName">Имя сеанса</param>
+        </member>
+        <member name="M:Cards.Front.Controllers.SessionController.List(System.Int32,System.Int32)">
+            <summary>
+                Получить список сеансов с постраничным выводом
+            </summary>
+            <param name="limit">Сколько взять</param>
+            <param name="offset">Сколько пропустить</param>
+        </member>
         <member name="M:Cards.Front.Extensions.ServicesRegistrationExtensions.AddSwagger(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
                 Register the Swagger generator, defining 1 or more Swagger documents

@@ -1,8 +1,10 @@
 using System;
 using System.IO;
+using AutoMapper;
 using Cards.DataAccess;
 using Cards.Front.Extensions;
 using Cards.Front.Hubs;
+using Cards.Front.Model;
 using Cards.Front.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -73,6 +75,7 @@ namespace Cards.Front
                 .ConfigureHttpClient((sp, client) => client.Timeout = TimeSpan.FromSeconds(10));
 
             services.Configure<AuthOptions>(Configuration.GetSection("Auth"));
+            services.AddAutoMapper(typeof(MappingProfile));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
