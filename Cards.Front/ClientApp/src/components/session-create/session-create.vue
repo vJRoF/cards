@@ -6,7 +6,7 @@
 
 import Vue from 'vue'
 import {VContainer, VRow, VCol} from 'vuetify/lib'
-import {ApiClient, IConfig} from "../../client/api-client"
+import {SessionsClient, IConfig} from "../../client/api-client"
 
 export default Vue.extend({
     name: 'session-create',
@@ -17,14 +17,18 @@ export default Vue.extend({
     },
     data() {
         return {
-            sessionName: ""
+            sessionsClient: new SessionsClient(new IConfig("dlkdfklsl44kmrf")),
+            sessionName: "",
+            pageSize: 10
         }
     },
     methods: {
         async createSession() {
-            const client = new ApiClient(new IConfig("dlkdfklsl44kmrf"));
             console.log(`sessionName is [${this.sessionName}]`);
-            await client.create(this.sessionName);
+            await this.sessionsClient.create(this.sessionName);
+        },
+        async listSessions(){
+
         }
     }
 })

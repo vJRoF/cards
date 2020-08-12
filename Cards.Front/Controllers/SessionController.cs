@@ -12,7 +12,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Cards.Front.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
     public class SessionController : ControllerBase
     {
@@ -31,7 +30,7 @@ namespace Cards.Front.Controllers
         ///     Создать новый сеанс
         /// </summary>
         /// <param name="sessionName">Имя сеанса</param>
-        [HttpPost("create")]
+        [HttpPost("api/v1/sessions/create")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SessionModel))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         public async Task<IActionResult> Create(
@@ -56,10 +55,10 @@ namespace Cards.Front.Controllers
         /// </summary>
         /// <param name="limit">Сколько взять</param>
         /// <param name="offset">Сколько пропустить</param>
-        [HttpGet("list")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Session[]))]
+        [HttpGet("api/v1/sessions/list")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagingResponseModel<SessionModel>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
-        public async Task<IActionResult> List(
+        public async Task<PagingResponseModel<SessionModel>> List(
             int limit,
             int offset)
         {
@@ -68,8 +67,13 @@ namespace Cards.Front.Controllers
                 .Skip(offset)
                 .Take(limit)
                 .ToArrayAsync(HttpContext.RequestAborted);
+            var count = await _dbContext.Sessions.CountAsync(HttpContext.RequestAborted);
 
-            return Ok(_mapper.Map<Session[]>(sessions));
+            return new PagingResponseModel<SessionModel>
+            {
+                Items = _mapper.Map<SessionModel[]>(sessions),
+                TotalCount = count
+            };
         }
     }
 }

@@ -23,7 +23,7 @@ export class AuthorizedApiBase {
   };
 }
 
-export class ApiClient extends AuthorizedApiBase {
+export class AccountClient extends AuthorizedApiBase {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -38,7 +38,7 @@ export class ApiClient extends AuthorizedApiBase {
      * @return Success
      */
     token(username: string, password: string): Promise<TokenCreatedModel> {
-        let url_ = this.baseUrl + "/token?";
+        let url_ = this.baseUrl + "/api/v1/account/token?";
         if (username === undefined || username === null)
             throw new Error("The parameter 'username' must be defined and cannot be null.");
         else
@@ -87,12 +87,24 @@ export class ApiClient extends AuthorizedApiBase {
         }
         return Promise.resolve<TokenCreatedModel>(<any>null);
     }
+}
+
+export class CardsClient extends AuthorizedApiBase {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(configuration: IConfig, baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super(configuration);
+        this.http = http ? http : <any>window;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
 
     /**
      * @return Success
      */
-    decks(): Promise<DeckModel[]> {
-        let url_ = this.baseUrl + "/api/v1/decks";
+    deckList(): Promise<DeckModel[]> {
+        let url_ = this.baseUrl + "/api/v1/cards/deck-list";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ = <RequestInit>{
@@ -105,11 +117,11 @@ export class ApiClient extends AuthorizedApiBase {
         return this.transformOptions(options_).then(transformedOptions_ => {
             return this.http.fetch(url_, transformedOptions_);
         }).then((_response: Response) => {
-            return this.processDecks(_response);
+            return this.processDeckList(_response);
         });
     }
 
-    protected processDecks(response: Response): Promise<DeckModel[]> {
+    protected processDeckList(response: Response): Promise<DeckModel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -134,14 +146,11 @@ export class ApiClient extends AuthorizedApiBase {
     /**
      * @return Success
      */
-    picture(cardId: number, deckId: string): Promise<void> {
-        let url_ = this.baseUrl + "/api/v1/picture/{deckId}/{cardId}";
+    picture(cardId: number): Promise<void> {
+        let url_ = this.baseUrl + "/api/v1/cards/picture/{cardId}";
         if (cardId === undefined || cardId === null)
             throw new Error("The parameter 'cardId' must be defined.");
         url_ = url_.replace("{cardId}", encodeURIComponent("" + cardId)); 
-        if (deckId === undefined || deckId === null)
-            throw new Error("The parameter 'deckId' must be defined.");
-        url_ = url_.replace("{deckId}", encodeURIComponent("" + deckId)); 
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ = <RequestInit>{
@@ -171,13 +180,25 @@ export class ApiClient extends AuthorizedApiBase {
         }
         return Promise.resolve<void>(<any>null);
     }
+}
+
+export class DesctopClient extends AuthorizedApiBase {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(configuration: IConfig, baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super(configuration);
+        this.http = http ? http : <any>window;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
 
     /**
      * Положить выбранную карту на стол
      * @return Success
      */
-    card(): Promise<void> {
-        let url_ = this.baseUrl + "/api/Desktop/card";
+    addCard(): Promise<void> {
+        let url_ = this.baseUrl + "/api/v1/desctop/add-card";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ = <RequestInit>{
@@ -189,11 +210,11 @@ export class ApiClient extends AuthorizedApiBase {
         return this.transformOptions(options_).then(transformedOptions_ => {
             return this.http.fetch(url_, transformedOptions_);
         }).then((_response: Response) => {
-            return this.processCard(_response);
+            return this.processAddCard(_response);
         });
     }
 
-    protected processCard(response: Response): Promise<void> {
+    protected processAddCard(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -207,6 +228,18 @@ export class ApiClient extends AuthorizedApiBase {
         }
         return Promise.resolve<void>(<any>null);
     }
+}
+
+export class SessionsClient extends AuthorizedApiBase {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(configuration: IConfig, baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super(configuration);
+        this.http = http ? http : <any>window;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
 
     /**
      * Создать новый сеанс
@@ -214,7 +247,7 @@ export class ApiClient extends AuthorizedApiBase {
      * @return Success
      */
     create(sessionName: string): Promise<SessionModel> {
-        let url_ = this.baseUrl + "/api/Session/create?";
+        let url_ = this.baseUrl + "/api/v1/sessions/create?";
         if (sessionName === undefined || sessionName === null)
             throw new Error("The parameter 'sessionName' must be defined and cannot be null.");
         else
@@ -267,7 +300,7 @@ export class ApiClient extends AuthorizedApiBase {
      * @return Success
      */
     list(limit: number | undefined, offset: number | undefined): Promise<Session[]> {
-        let url_ = this.baseUrl + "/api/Session/list?";
+        let url_ = this.baseUrl + "/api/v1/sessions/list?";
         if (limit === null)
             throw new Error("The parameter 'limit' cannot be null.");
         else if (limit !== undefined)

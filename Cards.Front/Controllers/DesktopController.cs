@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Cards.Front.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
     public class DesktopController : ControllerBase
     {
@@ -23,7 +22,7 @@ namespace Cards.Front.Controllers
         /// <summary>
         ///     Положить выбранную карту на стол
         /// </summary>
-        [HttpPost("card")]
+        [HttpPost("api/v1/desctop/add-card")]
         public async Task<IActionResult> Card()
         {
             await _cardsHubContext.Clients.All.SendAsync("messageRecieved", 0, "hello");

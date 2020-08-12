@@ -25,7 +25,7 @@ namespace Cards.Front.Controllers
             _httpClient = httpClientFactory.CreateClient("google");
         }
 
-        [HttpGet("api/v1/decks")]
+        [HttpGet("api/v1/cards/deck-list")]
         public Task<DeckModel[]> Decks()
         {
             return _appDbContext.Cards
@@ -35,7 +35,7 @@ namespace Cards.Front.Controllers
                 .ToArrayAsync();
         }
 
-        [HttpGet("api/v1/picture/{deckId}/{cardId}")]
+        [HttpGet("api/v1/cards/picture/{cardId}")]
         public async Task<IActionResult> Picture(int cardId)
         {
             var card = await _appDbContext.Cards.FindAsync(1);

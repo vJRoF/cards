@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Net;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Cards.DataAccess;
+﻿using Cards.DataAccess;
 using Cards.Front.Model;
 using Cards.Front.Options;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
 
 namespace Cards.Front.Controllers
 {
@@ -30,7 +28,7 @@ namespace Cards.Front.Controllers
             _authOptions = authOptionsAccessor.Value ?? throw new ArgumentNullException(nameof(_authOptions));
         }
 
-        [HttpPost("/token")]
+        [HttpPost("api/v1/account/token")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenCreatedModel))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         public IActionResult Token(

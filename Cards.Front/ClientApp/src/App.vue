@@ -38,9 +38,6 @@
     </v-app-bar>
 
     <v-main>
-      <v-btn v-on:click="addCard">
-        PUSH ME
-      </v-btn>
       <div v-for="message in messages" :key="message[0]">
         {{message[1]}}
       </div>
@@ -52,7 +49,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import * as signalR from "@microsoft/signalr";
-import { ApiClient, IConfig } from "./client/api-client";
 import sessionCreate from "./components/session-create/session-create.vue";
 
 export default Vue.extend({
@@ -66,10 +62,6 @@ export default Vue.extend({
       messages: new Array<[number, string]>()
   }),
   methods:{
-    addCard: async () => {
-      const client = new ApiClient(new IConfig("dfdfdf"));
-      await client.card();
-    },
     addMessage: function (username: number, message: string) {
       this.messages.push([this.messages.length, message]);
     }
