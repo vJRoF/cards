@@ -37,14 +37,15 @@
       </v-btn>
     </v-app-bar>
 
-    <v-content>
+    <v-main>
       <v-btn v-on:click="addCard">
         PUSH ME
       </v-btn>
       <div v-for="message in messages" :key="message[0]">
         {{message[1]}}
       </div>
-    </v-content>
+      <session-create/>
+    </v-main>
   </v-app>
 </template>
 
@@ -52,11 +53,13 @@
 import Vue from 'vue';
 import * as signalR from "@microsoft/signalr";
 import { ApiClient, IConfig } from "./client/api-client";
+import sessionCreate from "./components/session-create/session-create.vue";
 
 export default Vue.extend({
   name: 'App',
 
   components: {
+    sessionCreate
   },
 
   data: () => ({

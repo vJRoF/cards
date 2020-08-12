@@ -207,6 +207,119 @@ export class ApiClient extends AuthorizedApiBase {
         }
         return Promise.resolve<void>(<any>null);
     }
+
+    /**
+     * Создать новый сеанс
+     * @param sessionName Имя сеанса
+     * @return Success
+     */
+    create(sessionName: string): Promise<SessionModel> {
+        let url_ = this.baseUrl + "/api/Session/create?";
+        if (sessionName === undefined || sessionName === null)
+            throw new Error("The parameter 'sessionName' must be defined and cannot be null.");
+        else
+            url_ += "sessionName=" + encodeURIComponent("" + sessionName) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "POST",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processCreate(_response);
+        });
+    }
+
+    protected processCreate(response: Response): Promise<SessionModel> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SessionModel.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetails.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SessionModel>(<any>null);
+    }
+
+    /**
+     * Получить список сеансов с постраничным выводом
+     * @param limit (optional) Сколько взять
+     * @param offset (optional) Сколько пропустить
+     * @return Success
+     */
+    list(limit: number | undefined, offset: number | undefined): Promise<Session[]> {
+        let url_ = this.baseUrl + "/api/Session/list?";
+        if (limit === null)
+            throw new Error("The parameter 'limit' cannot be null.");
+        else if (limit !== undefined)
+            url_ += "limit=" + encodeURIComponent("" + limit) + "&"; 
+        if (offset === null)
+            throw new Error("The parameter 'offset' cannot be null.");
+        else if (offset !== undefined)
+            url_ += "offset=" + encodeURIComponent("" + offset) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processList(_response);
+        });
+    }
+
+    protected processList(response: Response): Promise<Session[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(Session.fromJS(item));
+            }
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetails.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Session[]>(<any>null);
+    }
 }
 
 export class TokenCreatedModel implements ITokenCreatedModel {
@@ -335,6 +448,102 @@ export class DeckModel implements IDeckModel {
 
 export interface IDeckModel {
     name?: string | undefined;
+}
+
+export class SessionModel implements ISessionModel {
+    id?: string;
+    name?: string | undefined;
+    created?: Date;
+    modified?: Date;
+
+    constructor(data?: ISessionModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.name = data["name"];
+            this.created = data["created"] ? new Date(data["created"].toString()) : <any>undefined;
+            this.modified = data["modified"] ? new Date(data["modified"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): SessionModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new SessionModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
+        data["modified"] = this.modified ? this.modified.toISOString() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface ISessionModel {
+    id?: string;
+    name?: string | undefined;
+    created?: Date;
+    modified?: Date;
+}
+
+export class Session implements ISession {
+    id?: string;
+    name?: string | undefined;
+    created?: Date;
+    modified?: Date;
+
+    constructor(data?: ISession) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.name = data["name"];
+            this.created = data["created"] ? new Date(data["created"].toString()) : <any>undefined;
+            this.modified = data["modified"] ? new Date(data["modified"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): Session {
+        data = typeof data === 'object' ? data : {};
+        let result = new Session();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
+        data["modified"] = this.modified ? this.modified.toISOString() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface ISession {
+    id?: string;
+    name?: string | undefined;
+    created?: Date;
+    modified?: Date;
 }
 
 export class ApiException extends Error {
