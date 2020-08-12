@@ -9,55 +9,66 @@
           <v-btn v-on:click="createSession">Создать</v-btn>
         </v-col>
       </v-row>
-      <!-- <v-row>
+      <v-row>
         <v-data-table
           :headers="headers"
-          :items="desserts"
+          :items="sessions"
           :options.sync="options"
-          :server-items-length="totalDesserts"
+          :server-items-length="totalSessions"
           :loading="loading"
           class="elevation-1"
-        ></v-data-table>
-      </v-row>-->
+        >
+          <template v-slot:[`item.created`]="{ item }">{{ item.created.toLocaleString() }}</template>
+          <template v-slot:[`item.modified`]="{ item }">{{ item.created.toLocaleString() }}</template>
+        </v-data-table>
+      </v-row>
     </v-container>
-    <error-handler ref="errorHandler"/>
+    <error-handler ref="errorHandler" />
   </v-main>
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { VContainer, VRow, VCol } from "vuetify/lib";
+import { VContainer, VRow, VCol, VDataTable } from "vuetify/lib";
+import { DataOptions } from "vuetify/types";
 import { SessionsClient, IConfig, SessionModel } from "../../client/api-client";
 import ErrorHandler from "../error-handler/error-handler.vue";
+import Component from "vue-class-component";
 
-export default Vue.extend({
-  name: "session-create",
+@Component({
   components: {
-    VContainer,
-    VRow,
-    VCol,
-    ErrorHandler,
+    VDataTable,
   },
-  data() {
-    return {
-      sessions: new Array<SessionModel>(),
-      sessionsClient: new SessionsClient(new IConfig("dlkdfklsl44kmrf")),
-      sessionName: "",
-      pageSize: 10,
-    };
-  },
-  methods: {
-    async createSession() {
-        try {
-            console.log(`sessionName is [${this.sessionName}]`);
-            await this.sessionsClient.create(this.sessionName);
-        }
-        catch(err) {
-            (this.$refs.errorHandler as ErrorHandler).display(err)
-        }
-    },
-    async listSessions() {
-      this.sessions = await this.sessionsClient.list(this.pageSize, 0);
-    },
-  },
-});
+})
+export default class Sessions extends Vue {
+  sessions = new Array<SessionModel>();
+  totalSessions = 0;
+  sessionsClient = new SessionsClient(new IConfig("dlkdfklsl44kmrf"));
+  sessionName = "";
+  options!: DataOptions;
+  headers = [
+    { text: "Название", value: "name" },
+    { text: "Дата создания", value: "created" },
+    { text: "Дата изменения", value: "modified" },
+  ];
+  async createSession() {
+    try {
+      console.log(`sessionName is [${this.sessionName}]`);
+      await this.sessionsClient.create(this.sessionName);
+      await this;
+    } catch (err) {
+      (this.$refs.errorHandler as ErrorHandler).display(err);
+    }
+  }
+  async listSessions() {
+    const pagingResponse = await this.sessionsClient.list(
+      this.options.itemsPerPage,
+      this.options.itemsPerPage * (this.options.page - 1)
+    );
+    this.sessions = pagingResponse.items;
+    this.totalSessions = pagingResponse.totalCount;
+  }
+  async mounted() {
+    await this.listSessions();
+  }
+}
 </script>

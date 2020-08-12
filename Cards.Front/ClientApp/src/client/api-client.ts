@@ -299,7 +299,7 @@ export class SessionsClient extends AuthorizedApiBase {
      * @param offset (optional) Сколько пропустить
      * @return Success
      */
-    list(limit: number | undefined, offset: number | undefined): Promise<Session[]> {
+    list(limit: number | undefined, offset: number | undefined): Promise<SessionModelPagingResponseModel> {
         let url_ = this.baseUrl + "/api/v1/sessions/list?";
         if (limit === null)
             throw new Error("The parameter 'limit' cannot be null.");
@@ -325,18 +325,14 @@ export class SessionsClient extends AuthorizedApiBase {
         });
     }
 
-    protected processList(response: Response): Promise<Session[]> {
+    protected processList(response: Response): Promise<SessionModelPagingResponseModel> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(Session.fromJS(item));
-            }
+            result200 = SessionModelPagingResponseModel.fromJS(resultData200);
             return result200;
             });
         } else if (status === 400) {
@@ -351,7 +347,7 @@ export class SessionsClient extends AuthorizedApiBase {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<Session[]>(<any>null);
+        return Promise.resolve<SessionModelPagingResponseModel>(<any>null);
     }
 }
 
@@ -531,52 +527,61 @@ export interface ISessionModel {
     modified?: Date;
 }
 
-export class Session implements ISession {
-    id?: string;
-    name?: string | undefined;
-    created?: Date;
-    modified?: Date;
+/** Обобщённый класс для представления постраничного вывода */
+export class SessionModelPagingResponseModel implements ISessionModelPagingResponseModel {
+    /** Всего элементов в коллекции */
+    totalCount!: number;
+    /** Содержимое запрошенной страницы */
+    items!: SessionModel[];
 
-    constructor(data?: ISession) {
+    constructor(data?: ISessionModelPagingResponseModel) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
                     (<any>this)[property] = (<any>data)[property];
             }
         }
+        if (!data) {
+            this.items = [];
+        }
     }
 
     init(data?: any) {
         if (data) {
-            this.id = data["id"];
-            this.name = data["name"];
-            this.created = data["created"] ? new Date(data["created"].toString()) : <any>undefined;
-            this.modified = data["modified"] ? new Date(data["modified"].toString()) : <any>undefined;
+            this.totalCount = data["totalCount"];
+            if (Array.isArray(data["items"])) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(SessionModel.fromJS(item));
+            }
         }
     }
 
-    static fromJS(data: any): Session {
+    static fromJS(data: any): SessionModelPagingResponseModel {
         data = typeof data === 'object' ? data : {};
-        let result = new Session();
+        let result = new SessionModelPagingResponseModel();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["name"] = this.name;
-        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
-        data["modified"] = this.modified ? this.modified.toISOString() : <any>undefined;
+        data["totalCount"] = this.totalCount;
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
         return data; 
     }
 }
 
-export interface ISession {
-    id?: string;
-    name?: string | undefined;
-    created?: Date;
-    modified?: Date;
+/** Обобщённый класс для представления постраничного вывода */
+export interface ISessionModelPagingResponseModel {
+    /** Всего элементов в коллекции */
+    totalCount: number;
+    /** Содержимое запрошенной страницы */
+    items: SessionModel[];
 }
 
 export class ApiException extends Error {

@@ -1,4 +1,7 @@
-﻿namespace Cards.Front.Model
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+
+namespace Cards.Front.Model
 {
     /// <summary>
     ///     Обобщённый класс для представления постраничного вывода
@@ -9,11 +12,13 @@
         /// <summary>
         ///     Всего элементов в коллекции
         /// </summary>
+        [Required]
         public int TotalCount { get; set; }
 
         /// <summary>
         ///     Содержимое запрошенной страницы
         /// </summary>
-        public TItem[] Items { get; set; }
+        [Required]
+        public TItem[] Items { get; set; } = Array.Empty<TItem>();
     }
 }

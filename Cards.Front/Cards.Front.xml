@@ -19,12 +19,28 @@
             <summary>
                 Получить список сеансов с постраничным выводом
             </summary>
-            <param name="limit">Сколько взять</param>
+            <param name="limit">Сколько взять</param>ru
             <param name="offset">Сколько пропустить</param>
         </member>
         <member name="M:Cards.Front.Extensions.ServicesRegistrationExtensions.AddSwagger(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
                 Register the Swagger generator, defining 1 or more Swagger documents
+            </summary>
+        </member>
+        <member name="T:Cards.Front.Model.PagingResponseModel`1">
+            <summary>
+                Обобщённый класс для представления постраничного вывода
+            </summary>
+            <typeparam name="TItem">Тип элемента в коллекции</typeparam>
+        </member>
+        <member name="P:Cards.Front.Model.PagingResponseModel`1.TotalCount">
+            <summary>
+                Всего элементов в коллекции
+            </summary>
+        </member>
+        <member name="P:Cards.Front.Model.PagingResponseModel`1.Items">
+            <summary>
+                Содержимое запрошенной страницы
             </summary>
         </member>
     </members>
